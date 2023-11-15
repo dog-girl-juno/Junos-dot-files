@@ -1,4 +1,4 @@
-# Juno's dot files
+######## Juno's dot files ###########
 My custom dot files that I use on arch with i3.
 
 1) install MonofurNerdFont from nerd fonts to your font folder. This is the font i use, and it is required for the icons to display correctly, including those cute little pawprints!
@@ -13,3 +13,5 @@ run xrandr in your terminal to get the proeper outputs. rather than declairing t
 
 7) For picom i am using picom-git from the AUR
 8) My alacritty config has been changed slightly and it took a while for me to track down the original file, so i figured i would post it here for others to use.
+
+# Some of these files are not modified yet, I have to rebuild my system over the course of the next few days. So these files are being dumped here so that I can fetch them later on. Following that they will be modified and edited. Please bear with me, I am in fact, just a silly doggo 󱙵󱙵󱙵
