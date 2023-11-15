@@ -1,7 +1,7 @@
-# junos-i3-configs
-My custom i3 config files for i3WM.
+# Juno's dot files
+My custom dot files that I use on arch with i3.
 
-1) install icons.ttf as well as MonofurNerdFont to your font folder. These are required for the icons to display correctly
+1) install MonofurNerdFont from nerd fonts to your font folder. This is the font i use, and it is required for the icons to display correctly, including those cute little pawprints!
 2) move i3status config to ~/.config/i3status/ and rename to "config"
 3) move i3 config to ~/.config/i3/ and rename to "config"
 4) refresh i3, and the changes should take effect.
@@ -10,3 +10,6 @@ My custom i3 config files for i3WM.
 run xrandr in your terminal to get the proeper outputs. rather than declairing the correct orientation i used arandr in the CLI because im lazy. 
 
 6) if you are on an amd card, comment out the nvidia startup command at the begining of the i3 config file. this will be of no use to you and may cause conflicts
+
+7) For picom i am using picom-git from the AUR
+8) My alacritty config has been changed slightly and it took a while for me to track down the original file, so i figured i would post it here for others to use.
