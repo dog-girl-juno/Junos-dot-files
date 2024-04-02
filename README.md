@@ -14,4 +14,4 @@ run xrandr in your terminal to get the proeper outputs. rather than declairing t
 7) For picom i am using picom-git from the AUR
 8) My alacritty config has been changed slightly and it took a while for me to track down the original file, so i figured i would post it here for others to use.
 
-# Some of these files are not modified yet, I have to rebuild my system over the course of the next few days. So these files are being dumped here so that I can fetch them later on. Following that they will be modified and edited. Please bare with me, I am in fact, just a silly doggo 󱙵󱙵󱙵
+Some of these files are not modified yet, I have to rebuild my system over the course of the next few days. So these files are being dumped here so that I can fetch them later on. Following that they will be modified and edited. Please bare with me, I am in fact, just a silly doggo 󱙵󱙵󱙵
