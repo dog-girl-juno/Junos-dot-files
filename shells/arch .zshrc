@@ -1,6 +1,10 @@
 # Welcome Message
 echo "   ====== Welcome Back! ======   "
 
+# Path to Oh-My-ZSH install
+export ZSH=$HOME/.oh-my-zsh
+
+
 # Aliases
 alias update="sudo pacman -Syu && sudo flatpak update -y && yay -Syu"
 alias ll="ls -la"
