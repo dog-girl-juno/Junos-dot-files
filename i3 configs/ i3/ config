@@ -1,290 +1,262 @@
-# border & title
-for_window [class="^.*"] border pixel 1, title_format "<b> %class >> %title </b>"
-# class                 border  backgr. text    indicator child_border
-client.focused          #2d2d2d	 #285577 #ffffff #2e9ef4  #808fa0
-client.focused_inactive #2d2d2d #5f676a #ffffff #484e50   #2d2d2d
-client.unfocused        #2d2d2d #222222 #888888 #292d2e   #2d2d2d
-client.urgent           #9d5b61 #900000 #ffffff #900000   #9d5b61
-client.placeholder      #2d2d2d #0c0c0c #ffffff #000000   #2d2d2d
-
-# gaps
+# Set Gaps
 gaps inner 8
 gaps outer 0
 
-# font
-font pango:MonofurNerdFont, Icons
+# Set monitor names
+set $fm HDMI-0
+set $sm DP-5
+set $vm DP-2
 
-# mod key used for most binds
-# Mod1 = Alt
-# Mod4 = Super
-set $Mod Mod4
+# Set Mod Key
+set $mod Mod4
 
-# direction keys
-set $up l
-set $down k
-set $left j
-set $right semicolon
+# Font
+font pango:MonofurNerdFont 12
 
-###############     Autostart      ##################
+############################################
+#		Autostart		   #
+############################################
 
-# run with reload
-exec_always --no-startup-id xrdb -load ~/.Xresources
+# Start XDG autostart
+exec --no-startup-id dex --autostart --environment i3
 
-# run once
-exec --no-startup-id xfsettingsd
+# i3 Lock
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
-# nvidia binary graphics driver startup
-exec i3 --force-xinerama -V >>~/.i3/i3log 2>&1
+# NetworkManager
+exec --no-startup-id nm-applet
 
-# xrandr startup
-exec --no-startup-id xrandr --output HDMI-0 --auto --right-of DP-1 &
+# Nvidia Driver Autostart
+# exec i3 --xinerama -V >>~/.i3.i3log 2>$1S
 
-# Starts picom compositor
+# Xrandr startup
+exec --no-startup-id ~/.screenlayout/screens.sh
+# exec --no-startup-id xrandr --output HDMI-0 --auto --right-of DP-5
+# exec --no-startup-id xrandr --output DP-2 --rotate left --left-of HDMI-0
+
+# Automount games drive script
+# exex --no-startup-id ~/Documents/"Bash Scripts"/mount.sh
+
+# Start Picom Renderer
 exec --no-startup-id picom -b
 
-#############         Bindings           ##################
+# Start Auto-tiling
+exec_always --no-startup-id autotiling
 
-# launchers
-bindsym Mod1+p exec --no-startup-id rofi_run -r
-bindsym Control+space exec --no-startup-id rofi_run -r
+# Polybar
+ exec_always --no-startup-id killall polybar
+ exec_always --no-startup-id ~/.config/polybar/launch.sh
 
-# kill focused window
-bindsym $Mod+Shift+q kill
-bindsym Mod1+q kill
-bindsym Mod1+F4 kill
+#########################################
+#		Set Wallpaper		#
+#########################################
 
-# core
-bindsym $Mod+w             exec --no-startup-id al-browser
-bindsym $Mod+f             exec --no-startup-id al-filemanager
-bindsym $Mod+t             exec --no-startup-id al-terminal
-bindsym $Mod+Return        exec --no-startup-id al-terminal
-bindsym Mod1+Shift+Return  exec --no-startup-id al-terminal
-bindsym Control+Shift+t    exec --no-startup-id al-terminal
-bindsym $Mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+exec_always feh --bg-scale ~/Pictures/wallpapers/Linux/b-642.jpg
 
-# logout script
+
+############################################
+#		Keybinds		   #
+############################################
+
+exec_always --no-startup-id polybar
+
+# Use pactl to adjust volume in PulseAudio.
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# move tiling windows via drag & drop by left-clicking into the title bar,
+# or left-clicking anywhere into the window while holding the floating modifier.
+tiling_drag modifier titlebar
+
+# Start Alacritty
+bindsym $mod+Return exec alacritty
+
+# Kill Window
+bindsym $mod+q kill
+
+# Browser
+bindsym $mod+w exec brave
+
+# Rofi
+bindsym $mod+space exec --no-startup-id rofi -show drun
+# Rofi Logout Script
 bindsym $Mod+x exec --no-startup-id rofi_run -l
 
 # Screenshot
-bindsym Print exec --no-startup-id "scrot '%S.png' -e 'mv $f $$(xdg-user-dir PICTURES)/ArchLabs-%S-$wx$h.png ; feh $$(xdg-user-dir PICTURES)/ArchLabs-%S-$wx$h.png'"
+bindsym Print exec --no-startup-id "scrot '%S.png' -e 'mv $f $$(xdg-user-dir PICTURES)/Arch-%S-$wx$h.png'"
 
-# audio
-bindsym XF86AudioPlay        exec --no-startup-id playerctl play-pause
-bindsym XF86AudioNext        exec --no-startup-id playerctl next
-bindsym XF86AudioPrev        exec --no-startup-id playerctl previous
-bindsym XF86AudioStop        exec --no-startup-id playerctl stop
-bindsym XF86AudioMute        exec --no-startup-id pamixer -t
-bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 2
-bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 2
+#########################################################
+#		Container/ Window Control 		#
+#########################################################
 
-# backlight
-bindsym XF86MonBrightnessUp   exec --no-startup-id xbacklight -inc 10
-bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 10
+# Shift Focus
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
 
-###########          Workspace Bindings          ###############
+# Move Focused Window
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
 
-# Workspace Variables
+# Split Horizontal
+bindsym $mod+h split h
 
-set $ws1 "1:󰏩 Primary"
-set $ws2 "2: Secondary"
-set $ws3 "3: Discord"
-set $ws4 "4: Firefox"
-set $ws5 "5:󰏩 Aux 5"
-set $ws6 "6:󰏩 Aux 6"
-set $ws7 "7:󰏩 Aux 7"
-set $ws8 "8:󰏩 Aux 8"
-set $ws9 "9:󰏩 Aux 9"
-set $ws10 "10:󰏩 Aux 10"
+# Split Vertical
+bindsym $mod+v split v
 
+# Fullscreen Toggle
+bindsym $mod+f fullscreen toggle
+
+# Change Container Layout
+bindsym $mod+s layout stacking
+bindsym $mod+Shift+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Set Floating/ Tiling
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+d focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+#bindsym $mod+d focus child
+
+##########################################
+#		Screen Locking		 #
+##########################################
+
+bindsym Control+$mod+x exec "i3lock -i ~/Pictures/wallpapers/Linux/archchan/arch-chan_to.png"
+
+
+###################################################
+#		Worspace Bindings		  #
+###################################################
+
+set $ws1 "1:󰏩 "
+set $ws2 "2:󱐏 "
+set $ws3 "3: "
+set $ws4 "4:󰾔 "
+set $ws5 "5: "
+set $ws6 "6: "
+set $ws7 "7: "
+set $ws8 "8: "
+set $ws9 "9: "
+set $ws10 "10: "
 
 # switch to workspace
-bindsym $Mod+1 workspace number $ws1
-bindsym $Mod+2 workspace number $ws2
-bindsym $Mod+3 workspace number $ws3
-bindsym $Mod+4 workspace number $ws4
-bindsym $Mod+5 workspace number $ws5
-bindsym $Mod+6 workspace number $ws6
-bindsym $Mod+7 workspace number $ws7
-bindsym $Mod+8 workspace number $ws8
-bindsym $Mod+9 workspace number $ws9
-bindsym $Mod+0 workspace number $ws10
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
 
-
-# switch to workspace - numpad alternatives
-bindsym $Mod+Mod2+KP_1 workspace number $ws1
-bindsym $Mod+Mod2+KP_2 workspace number $ws2
-bindsym $Mod+Mod2+KP_3 workspace number $ws3
-bindsym $Mod+Mod2+KP_4 workspace number $ws4
-bindsym $Mod+Mod2+KP_5 workspace number $ws5
-bindsym $Mod+Mod2+KP_6 workspace number $ws6
-bindsym $Mod+Mod2+KP_7 workspace number $ws7
-bindsym $Mod+Mod2+KP_8 workspace number $ws8
-bindsym $Mod+Mod2+KP_9 workspace number $ws9
-bindsym $Mod+Mod2_KP_0 workspace number $ws10
-
-# switch to next or previous workspace
-bindsym $Mod+Mod1+Left  workspace prev
-bindsym $Mod+Mod1+Right workspace next
+# Workspace Switching Number Pad Alts
+bindsym $mod+KP_1 workspace number $wsl
+bindsym $mod+KP_2 workspace number $ws2
+bindsym $mod+KP_3 workspace number $ws3
+bindsym $mod+KP_4 workspace number $ws4
+bindsym $mod+KP_5 workspace number $ws5
+bindsym $mod+KP_6 workspace number $ws6
+bindsym $mod+KP_7 workspace number $ws7
+bindsym $mod+KP_8 workspace number $ws8
+bindsym $mod+KP_9 workspace number $ws9
+bindsym $mod+KP_0 workspace number $ws10
 
 # move focused container to workspace
-bindsym $Mod+Shift+1 move container to workspace number $ws1
-bindsym $Mod+Shift+2 move container to workspace number $ws2
-bindsym $Mod+Shift+3 move container to workspace number $ws3
-bindsym $Mod+Shift+4 move container to workspace number $ws4
-bindsym $Mod+Shift+5 move container to workspace number $ws5
-bindsym $Mod+Shift+6 move container to workspace number $ws6
-bindsym $Mod+Shift+7 move container to workspace number $ws7
-bindsym $Mod+Shift+8 move container to workspace number $ws8
-bindsym $Mod+Shift+9 move container to workspace number $ws9
-bindsym $Mod+Shift+0 move container to workspace number $ws10
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
 
-# move focused container to workspace - numpad alternatives
-bindsym $Mod+Shift+Mod2+KP_End   move container to $ws1
-bindsym $Mod+Shift+Mod2+KP_Down  move container to $ws2
-bindsym $Mod+Shift+Mod2+KP_Next  move container to $ws3
-bindsym $Mod+Shift+Mod2+KP_Left  move container to $ws4
-bindsym $Mod+Shift+Mod2+KP_Begin move container to $ws5
-bindsym $Mod+Shift+Mod2+KP_Right move container to $ws6
-bindsym $Mod+Shift+Mod2+KP_Home  move container to $ws7
-bindsym $Mod+Shift+Mod2+KP_Up    move container to $ws8
+# Start specific applications on dedicated workspaces
+assign [class="(?i)discord"] $ws1
+assign [class="(?!)element"] $ws1
 
-# Start specific applications in dedicated workspaces
-assign [class="(?i)discord"] $ws3
-assign [class="(?i)firefox"] $ws4
+###################################################
+#		Monitor Declarations		  #
+###################################################
 
-##############     Monitor Declorations      ##############
-
-# Workspace output for monitors
-workspace 1 output DP-1
+workspace 1 output DP-2
 workspace 2 output HDMI-0
-workspace 3 output DP-1
-workspace 4 output HDMI-0
-workspace 5 output DP-1
-workspace 6 output HDMI-0
-workspace 7 output DP-1
+workspace 3 output DP-5
+workspace 4 output DP-2
+workspace 5 output HDMI-0
+workspace 6 output DP-5
+workspace 7 output DP-2
 workspace 8 output HDMI-0
-workspace 9 output DP-1
+workspace 9 output DP-5
 workspace 10 output HDMI-0
 
-##############     Reload configs           ################
-
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $Mod+Shift+r restart
+###########################################
+#		Reload Configs		  #
+###########################################
 
 # reload the configuration file
-bindsym $Mod+Shift+c reload
+bindsym $mod+Shift+c reload
 
-############      Container/Window control  ############
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
 
-# Scratchpad, Floating
-bindsym $Mod+space floating toggle
-floating_modifier  Mod1
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
-bindsym $Mod+Shift+z move scratchpad
-bindsym $Mod+z scratchpad show
+#########################################
+#		Window Resizing		#
+#########################################
 
-# change focus
-bindsym $Mod+$left  focus left
-bindsym $Mod+$down  focus down
-bindsym $Mod+$up    focus up
-bindsym $Mod+$right focus right
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
 
-# alternatively, you can use the cursor keys:
-bindsym $Mod+Left  focus left
-bindsym $Mod+Down  focus down
-bindsym $Mod+Up    focus up
-bindsym $Mod+Right focus right
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
 
-bindsym $Mod+p focus parent
-bindsym $Mod+c focus child
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
 
-# move focused window
-bindsym $Mod+Shift+$left  move left  10px
-bindsym $Mod+Shift+$down  move down  10px
-bindsym $Mod+Shift+$up    move up    10px
-bindsym $Mod+Shift+$right move right 10px
-
-# alternatively, you can use the cursor keys:
-bindsym $Mod+Shift+Up    move up    10px
-bindsym $Mod+Shift+Down  move down  10px
-bindsym $Mod+Shift+Left  move left  10px
-bindsym $Mod+Shift+Right move right 10px
-
-# Size
-bindsym Mod1+Up    resize shrink height 10 px or 1 ppt
-bindsym Mod1+Down  resize grow   height 10 px or 1 ppt
-bindsym Mod1+Left  resize shrink width  10 px or 1 ppt
-bindsym Mod1+Right resize grow   width  10 px or 1 ppt
-
-# layout toggle, keycode 23 is Tab
-bindcode Mod1+23 layout toggle tabbed split
-bindcode $Mod+23 layout toggle splitv splith
-
-# switch to workspace with urgent window
-for_window [urgent="latest"] focus
-focus_on_window_activation   focus
-
-# container layout
-bindsym $Mod+h split h
-bindsym $Mod+v split v
-bindsym $Mod+Shift+t layout tabbed
-bindsym $Mod+Shift+s layout stacking
-bindsym $Mod+Shift+h layout toggle split
-default_orientation horizontal
-
-###############      Border & Gaps     ###############
-
-new_window normal
-new_float  normal
-
-hide_edge_borders both
-
-bindsym $Mod+shift+b border toggle
-
-# changing border style
-bindsym $Mod+n border normal
-bindsym $Mod+y border 1pixel
-bindsym $Mod+u border none
-
-# change gaps
-bindsym $Mod+plus                gaps inner current plus  5
-bindsym $Mod+minus               gaps inner current minus 5
-bindsym $Mod+Shift+plus          gaps outer current plus  5
-bindsym $Mod+Shift+minus         gaps outer current minus 5
-bindsym $Mod+Control+plus        gaps inner all     plus  5
-bindsym $Mod+Control+minus       gaps inner all     minus 5
-bindsym $Mod+Control+Shift+plus  gaps outer all     plus  5
-bindsym $Mod+Control+Shift+minus gaps outer all     minus 5
-
-############    application settings   ############
-
-# assign applications to specific workspace
-assign [class="(?i)(?:firefox)"] → 1
-assign [class="(?i)(?:geany)"]   → 2
-assign [class="(?i)(?:thunar)"]  → 3
-
-# focus, floating, & sticky
-for_window [class="(?i)(?:qt5ct|pinentry|firefox|geany|thunar)"] focus
-for_window [title="(?i)(?:copying|deleting|moving)"] floating enable
-for_window [window_role="(?i)(?:pop-up|setup)"]      floating enable
-
-popup_during_fullscreen smart
-
-bar {
-# Sets bar position at top of screen
-	position top
-# Removes default numbers for bar
-	strip_workspace_numbers yes
-
- colors {
-        background #2d2d2d
-        statusline #EF6E82
-        separator #6EEFDB
-#                            border  backgr. text
-        focused_workspace  #EF6E82 #EF6E82 #000000
-        active_workspace   #2D2D2D #2D2D2D #ef6e82
-        inactive_workspace #F9A1A0 #F9A1A0 #888888
-        urgent_workspace   #9d5b61 #9d5b61 #000000
-    }
-        status_command i3status -c ~/.config/i3status/config
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
 }
+
+bindsym $mod+r mode "resize"
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+# bar {
+#         status_command i3status
+# }
+
