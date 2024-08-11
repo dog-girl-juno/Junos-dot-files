@@ -1,6 +1,9 @@
 # Welcome Message
 echo "   ====== Welcome Back! ======   "
 
+# Path to Oh-My-ZSH install
+export ZSH=$HOME/.oh-my-zsh
+
 # Aliases
 alias moc="mocp -T 30equals"
 alias update="sudo nala update && sudo nala upgrade -y && sudo nala autoremove"
